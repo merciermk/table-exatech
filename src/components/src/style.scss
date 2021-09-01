@@ -1,0 +1,228 @@
+/* General */
+
+$active-state-color: rgb(5, 5, 5);
+
+$font-size: 14px;
+$icon-size: 20px;
+
+$sub-menu-icon-size: 15px;
+$sub-menu-color: rgba(255, 255, 255, 0.15);
+$nav-text-color: rgb(255, 255, 255);
+$nav-hover-color: rgba(255, 255, 255, 0.85);
+
+$bg-color-1: #ED040A;
+$bg-color-2: #A20208;
+$nav-min-width: 50px;
+$nav-extended: 300px;
+$menu-margin-left: 10px;
+/* lower btn  */
+
+$ham-btn-mg-left: $nav-extended + $menu-margin-left;
+$lower-btn-color: rgba(71, 71, 71, 0.205);
+$btn-color: rgba(255, 255, 255, 0.705);
+$btn-bg-color: $bg-color-1;
+
+
+
+#cmp-nav-left {
+  z-index: 11400 !important;
+  overflow: hidden;
+  margin: 5rem 0 0 $menu-margin-left;
+  height: calc(100% - 50px - 50px);
+  color: $nav-text-color;
+  font-size: $font-size;
+  position: fixed;
+  background: linear-gradient(0, $bg-color-2, $bg-color-1);
+  border-radius: 10px;
+  transition: linear 0.5s;
+  white-space: nowrap;
+}
+
+.hover:hover,
+a:hover{
+  color: $nav-hover-color !important
+}
+
+ul{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Gestion de la taille ouvert et fermé en taille standard */
+.is-close {
+  width: $nav-min-width;
+}
+.is-open {
+  width: $nav-extended;
+}
+
+/* **************** */
+/* Elements du menu */
+/* **************** */
+
+/* global */
+
+nav a:visited,
+nav a:link {
+  color: $nav-text-color;
+  text-decoration: none;
+}
+
+.nav-icon {
+  min-width: $nav-min-width;
+  max-width: $nav-min-width;
+  font-size: $icon-size;
+  text-align: center;
+}
+
+/* Elements du milieu */
+
+.nav-elements {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-x: hidden ;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  height: calc(100%);
+}
+
+/* *********************** */
+/* Premier / Dernier element du menu */
+/* *********************** */
+
+// barre HR
+.top-hr{
+  margin: 0.5rem
+}
+
+.firstElement{
+  margin-top: 0.5rem;
+}
+
+.lastElement{
+  justify-self: flex-end;
+  width: $nav-extended;
+  margin-top: auto;
+  margin-bottom: 0px;
+  .collapsed > .accordion-state {
+    transform: rotate(-90deg);
+  }
+  .accordion-state {
+    transform: rotate(90deg);
+  }
+}
+
+/* **************** */
+/* ***sous-menu**** */
+/* **************** */
+.nav-submenu-icon {
+  min-width: $nav-min-width;
+  font-size: $sub-menu-icon-size;
+}
+.sousmenu {
+  width: $nav-extended;
+  padding: 0 0 0 0;
+  background-color: $sub-menu-color;
+}
+.sousmenu > a {
+  height: 50px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+/* Gestion de la fleche des accordions */
+.collapsed > .accordion-state {
+  transform: rotate(90deg);
+  transition-duration: 0.5s;
+}
+.accordion-state {
+  transform: rotate(-90deg);
+  margin: 0 20px 0 auto;
+  font-size: 10px;
+  transition-duration: 0.5s;
+}
+
+/* ********************* */
+/* Gestion du lien actif */
+/* ********************* */
+
+.router-link-exact-active {
+  background-color: $active-state-color;
+}
+
+/* **************** */
+/* **Toggle button* */
+/* **************** */
+
+.toggle-btn {
+  display: flex;
+  flex-wrap: no-wrap;
+  justify-content: center;
+  align-items: center;
+  min-width: 30px;
+  min-height: 40px;
+  visibility: hidden;
+  z-index: 1041 !important;
+  color: $btn-color;
+  position: fixed;
+  margin-top: 95px;
+  background-color: $btn-bg-color;
+  transition: linear 0.5s;
+  border-radius: 0px 5px 5px 0;
+}
+
+.toggle-btn-icon{
+  font-size: 20px
+}
+
+/* Cache le scroll */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
+}
+
+/* responsive under 1025px */
+
+@media screen and (max-device-width: 1024px) {
+
+}
+
+/* changement de l'état du composant si version mobile */
+
+@media screen and(hover:none){
+  .lowerBtn{
+   z-index:1039 !important;
+    position:fixed;
+    width: 100%;
+    height:100%;
+    background-color: $lower-btn-color;
+  }
+
+  .is-close {
+    width: $nav-extended;
+    left : -$nav-extended - $menu-margin-left
+  }
+
+  .is-open {
+    left:0
+  }
+
+  #cmp-nav-left {
+    margin-top: 5rem;
+  }
+
+  .toggle-btn {
+    visibility: visible;
+  }
+
+  .btn-is-open {
+    margin-left: $ham-btn-mg-left;
+  }
+
+  .btn-is-close {
+    margin-left: 0px
+  }
+}
