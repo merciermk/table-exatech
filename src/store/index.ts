@@ -15,19 +15,17 @@ export default new Vuex.Store({
         },
         {
           key: 'Poste',
-          sortable: false
+          sortable: true
         },
         {
           key: 'filieres',
           label: 'Filiere',
-          sortable: true,
-          // Variant applies to the whole column, including the header and footer
-          variant: 'danger'
+          sortable: true
         },
         {
           key: 'matiere',
           label: 'matiere',
-          sortable: false
+          sortable: true
         },
         {
           key: 'etats',
@@ -69,7 +67,7 @@ export default new Vuex.Store({
           { type: 'form' }
       },
       {
-        libelle: 'poste',
+        libelle: 'Poste',
         defautOptionlibelle: 'Tous les',
         model: 'posteSouhaits',
         value: '-',
