@@ -19,7 +19,7 @@ export default new Vuex.Store({
         },
         {
           key: 'filieres',
-          label: 'Filiere',
+          label: 'filieres',
           sortable: true
         },
         {
@@ -78,9 +78,9 @@ export default new Vuex.Store({
 
       },
       {
-        libelle: 'Filiere',
+        libelle: 'filieres',
         defautOptionlibelle: 'Toutes les',
-        model: 'concour',
+        model: 'concours',
         value: '-',
         index: 'name',
         datas: [{ name: 'Fil1' }, { name: 'Fil2' }, { name: 'Fil3' }],

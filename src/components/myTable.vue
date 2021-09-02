@@ -1,16 +1,27 @@
 <template>
   <div>
-    <div class="filter-tags">
-      <p>Filtres Actifs :</p>
+    <!-- Affichage des tags au dessus du filtre-->
+    <div class="filter-tags" v-if="filterTags.length !== 0">
+      <p>Filtres:</p>
       <span
-        class="badge bg-primary tag"
+        class="badge rounded-pill btn-bg tag"
         v-for="(tag, index) in filterTags"
         :key="filterTags + index"
       >
-        {{ tag.libelle.toUpperCase() }} : {{ tag.value }}
+        {{ tag.libelle.toLowerCase() }} : {{ tag.value }}
+        <button @click="clearFilters(tag)" class="">
+           <font-awesome-icon icon="times" />
+          </button>
       </span>
+      <button
+        class="badge rounded-pill clear-btn clear-filter-btn"
+        @click="clearFilters()"
+        v-if="filterTags.length !== 0"
+      >
+        Effacer les filtres
+      </button>
     </div>
-    <button @click="clearFilters">Effacer les filtres</button>
+
     <b-table
       responsive="sm"
       ref="b_table"
@@ -22,7 +33,7 @@
       :sort-direction.sync="sortDirection"
       show-empty
     >
-      <!-- Mise en place d'une icone de recherche compare la Key de field et  -->
+      <!-- Mise en place d'une icone de recherche. Compare la Key de field et libelle de filter  -->
       <template #head()="data">
         <div class="header-filter">
           <span>{{ data.label }}</span>
@@ -40,47 +51,93 @@
                   needToFilter.libelle === data.field.key
               "
             >
-              <button  class="nav-icon"
+              <button
+                :style="needToFilter.value === '' || needToFilter.value === '-'? '{}' : 'color: #2793BA'"
+                class="nav-icon clear-btn"
                 type="button"
                 :id="data.field.key + '-dropdown'"
                 data-bs-toggle="dropdown"
-                aria-expanded="false"
-                data-bs-offset="-50,10"
-                @click.stop>
-                <font-awesome-icon
-                  icon="filter"
-                />
+                aria-bs-haspopup="true"
+                aria-bs-expanded="false"
+                data-bs-offset="-60,10"
+              >
+                <font-awesome-icon icon="filter" />
               </button>
               <!-- Inside Dropdown, compare le libelle de filtre et le label de data pour organiser les filtres par colonnes -->
-              <div class="dropdown-menu" :aria-labelledby="data.label + 'dropdown'" >
-            <div
-              v-for="(filtre, indexFiltre) in tableFilters"
-              :key="filtre.libelle + indexFiltre"
-            >
-              <div v-if="filtre.libelle.toLowerCase() === data.label.toLowerCase()">
-                <div v-if="tableFilters[indexFiltre].options.type === 'deroulant'">
-                    <p>Rechercher par: {{ filtre.libelle }}</p>
-                    <!-- Menu deroulant -->
-                    <select v-if="tableFilters[indexFiltre].options.type === 'deroulant'" class="form-select form-select-sm" @change="filtresHandler" :id="'filtre_' + indexFiltre" v-model="tableFilters[indexFiltre].value">
-                  <option selected value="-">{{ (tableFilters.defautOptionlibelle !== null && tableFilters[indexFiltre].defautOptionlibelle !== undefined) ? (tableFilters[indexFiltre].defautOptionlibelle + ' ' + filtre.libelle) : 'Filtrer par ' + tableFilters[indexFiltre].libelle }}</option>
-                  <option v-for="(data, indice) in tableFilters[indexFiltre].datas" :index="indice" :key="data.id" :value="data.name">{{ data.name }}</option>
-                </select>
+              <div
+                class="dropdown-menu"
+                :aria-labelledby="data.label + 'dropdown'"
+              >
+                <div
+                  v-for="(filtre, indexFiltre) in tableFilters"
+                  :key="filtre.libelle + indexFiltre"
+                >
+                  <div
+                    v-if="
+                      filtre.libelle.toLowerCase() ===
+                        data.field.key.toLowerCase()
+                    "
+                  >
+                    <div
+                      v-if="
+                        tableFilters[indexFiltre].options.type === 'deroulant'
+                      "
+                    >
+                      <p>Rechercher par: {{ filtre.libelle }}</p>
+                      <!-- Menu deroulant -->
+                      <select
+                        v-if="
+                          tableFilters[indexFiltre].options.type === 'deroulant'
+                        "
+                        class="form-select form-select-sm"
+                        @change="filtresHandler"
+                        :id="'filtre_' + indexFiltre"
+                        v-model="tableFilters[indexFiltre].value"
+                      >
+                        <option selected value="-">{{
+                          filtre.defautOptionlibelle !== null &&
+                          filtre.defautOptionlibelle !== undefined
+                            ? filtre.defautOptionlibelle +
+                              " " +
+                              filtre.libelle
+                            : "Filtrer par " + tableFilters[indexFiltre].libelle
+                        }}</option>
+                        <option
+                          v-for="(data, indice) in tableFilters[indexFiltre]
+                            .datas"
+                          :index="indice"
+                          :key="data.id"
+                          :value="data.name"
+                          >{{ data.name }}</option
+                        >
+                      </select>
+                    </div>
+                    <!-- Input -->
+                    <div class="filter-input">
+                      <b-form-input
+                        v-if="tableFilters[indexFiltre].options.type === 'form'"
+                        :id="'filtre_' + indexFiltre"
+                        v-on:keyup.enter="filtresHandler"
+                        v-model="tableFilters[indexFiltre].value"
+                        type="text"
+                        value=""
+                        class="form-control col form-control-sm"
+                        :placeholder="
+                          tableFilters[indexFiltre].defautOptionlibelle !==
+                            null &&
+                          tableFilters[indexFiltre].defautOptionlibelle !==
+                            undefined
+                            ? tableFilters[indexFiltre].defautOptionlibelle +
+                              ' ' +
+                              tableFilters[indexFiltre].libelle
+                            : 'Recherche par ' + filtre.libelle
+                        "
+                      ></b-form-input>
+                    </div>
+                  </div>
                 </div>
-                <!-- Input -->
-              <b-form-input
-              v-else
-              :id="'filtre_' + indexFiltre"
-              v-on:keyup.enter="filtresHandler"
-              v-model="tableFilters[indexFiltre].value"
-              type="text"
-              value=""
-              class="form-control form-control-sm"
-              :placeholder="(tableFilters[indexFiltre].defautOptionlibelle !== null && tableFilters[indexFiltre].defautOptionlibelle !== undefined) ? (tableFilters[indexFiltre].defautOptionlibelle + ' ' + tableFilters[indexFiltre].libelle) : 'Recherche par ' + filtre.libelle"
-            ></b-form-input>
               </div>
             </div>
-          </div>
-          </div>
           </div>
         </div>
 
@@ -172,11 +229,20 @@ export default class myTable extends Vue {
   }
 
   /* Fonction de suppression des filtres /  */
-  clearFilters () {
-    if (this.tableFilters !== undefined) {
+  clearFilters (tag: any | undefined): void {
+    if (this.tableFilters !== undefined && !tag) {
       for (let index = 0; index < this.tableFilters.length; index++) {
-        this.tableFilters[index].value = ''
+        console.log('KikooLol')
+        this.tableFilters[index].value = '-'
         this.getParams()
+      }
+    }
+    if (this.tableFilters !== undefined && tag !== undefined) {
+      for (let index = 0; index < this.tableFilters.length; index++) {
+        if (this.tableFilters[index].value === tag.value) {
+          this.tableFilters[index].value = ''
+          this.getParams()
+        }
       }
     }
   }
@@ -184,6 +250,13 @@ export default class myTable extends Vue {
 </script>
 
 <style lang="scss">
+.clear-btn {
+  margin: 0;
+  padding: 0;
+  background-color: inherit;
+  border: 0px;
+}
+
 .header-filter {
   display: flex;
   justify-content: center;
@@ -193,10 +266,41 @@ export default class myTable extends Vue {
 .filter-tags {
   height: 30px;
   display: flex;
+  align-items: center;
+  p{
+    margin:0
+  }
+}
+
+.clear-filter-btn{
+  display: flex !important;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center !important;
+  margin: 0 5px 0 5px;
+  border: 1px solid #2793BA;
+  color: #2793BA !important
 }
 .tag {
-  min-width: 100px;
-  margin: auto 5px auto 5px;
+  display: flex !important;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center !important;
+  margin: 0 5px 0 5px;
+  background-color: #2793BA;
+
+  button{
+    height: 100%;
+    display:flex;
+    align-items: center;
+    margin-left: 10px !important;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    background-color: inherit;
+    border: none;
+    color: inherit
+  }
 }
 .nav-icon {
   font-size: 12px;
@@ -204,6 +308,11 @@ export default class myTable extends Vue {
 }
 .dropdown-menu {
   padding: 10px !important;
+  min-width: 200px !important;
+}
+
+.filter-active-color{
+  color: #2793BA !important
 }
 
 /* CSS de base */
