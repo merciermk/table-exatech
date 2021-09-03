@@ -28,7 +28,11 @@ export default new Vuex.Store({
           sortable: true
         },
         {
-          key: 'etats',
+          key: 'etat',
+          sortable: false
+        },
+        {
+          key: 'coucou',
           sortable: false
         }
       ],
@@ -107,6 +111,17 @@ export default new Vuex.Store({
         loading: false,
         options: { type: 'deroulant' }
 
+      },
+      {
+        libelle: 'coucou',
+        defautOptionlibelle: 'Rechercher Rechercher un',
+        model: 'lol',
+        value: '-',
+        index: 'name',
+        datas: [{ name: 'coucou' }, { name: 'coucoulol' }],
+        loading: false,
+        options:
+          { type: 'deroulant' }
       }
       ]
     }
