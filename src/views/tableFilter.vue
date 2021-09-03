@@ -4,7 +4,7 @@
   <div id="table-filter">
     <my-table
       :tableFields="appfields"
-      :tableDatas="appdatas"
+      :datas="datas"
       :tableFilters="appfiltersSection"
     > </my-table>
   </div>
